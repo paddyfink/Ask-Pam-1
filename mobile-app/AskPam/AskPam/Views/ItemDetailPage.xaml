@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="AskPam.Views.ItemDetailPage"
+             xmlns:i18n="clr-namespace:AskPam.Helpers;assembly=AskPam"
+             xmlns:local="clr-namespace:AskPam.Controls;assembly=AskPam"
+             xmlns:converter="clr-namespace:AskPam.Converters"
+             Title="{Binding CurrentConversation, Converter={StaticResource ConversationTitleConverter}}">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converter:ConversationTitleConverter x:Key="ConversationTitleConverter" />
+            <converter:BoolToStringConverter  x:Key="BoolToStringConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    <Grid Padding="15">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="60" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="4*" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <Picker Title="{i18n:Translate AssignToLabel}"
+                Margin="10,0,0,0"
+                ItemsSource="{Binding Users}"
+                ItemDisplayBinding="{Binding FullName}"
+                SelectedIndex="{Binding SelectedUserIndex}"
+                Grid.Row="0" />
+
+        <StackLayout Orientation="Vertical"
+            Spacing="0"
+            Grid.Row="0"
+            Grid.Column="1">            
+            <Label Text="{Binding Path=IsBotEnabled,Converter={StaticResource BoolToStringConverter}}"
+                   FontSize="Medium"      
+                   HorizontalOptions="Center"
+                   VerticalOptions="Center" />
+            <Switch IsToggled="{Binding Path=IsBotEnabled, Mode=TwoWay}"
+                    HorizontalOptions="Center"
+                    Toggled="Switch_Toggled"
+                    VerticalOptions="Center" />
+        </StackLayout>
+
+        <ListView x:Name="ConversationMessagesListView"
+                  ItemsSource="{Binding CurrentConversation.Messages}"
+                  VerticalOptions="FillAndExpand"
+                  HasUnevenRows="true"
+                  IsPullToRefreshEnabled="false"
+                  Grid.Row="1"
+                  Grid.ColumnSpan="2"
+                  CachingStrategy="RetainElement">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <local:MessageViewCell />
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+        <Entry Grid.Row="2"
+               Grid.Column="0"
+               Placeholder="{i18n:Translate SendMessagePlaceholder}"
+               Text="{Binding SendMessageText}" />
+        <Button Grid.Row="2"
+                Grid.Column="1"
+                Text="{i18n:Translate SendLabel}"
+                Command="{Binding SendMessageCommand}" />
+    </Grid>
+</ContentPage>

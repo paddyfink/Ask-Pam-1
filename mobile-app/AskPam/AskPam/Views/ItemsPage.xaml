@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="AskPam.Views.ItemsPage"
+             xmlns:converter="clr-namespace:AskPam.Converters"
+             xmlns:behavior="clr-namespace:AskPam.Behaviours"
+             xmlns:i18n="clr-namespace:AskPam.Helpers;assembly=AskPam"
+             xmlns:local="clr-namespace:AskPam.Controls;assembly=AskPam"
+             Title="{Binding Title}"
+             x:Name="BrowseItemsPage">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converter:DateTimeAgoConverter  x:Key="DateTimeAgoConverter" />
+            <converter:InitialsConverter  x:Key="InitialsConverter" />
+            <converter:ItemVisibilityEventArgstemConverter x:Key="ItemVisibilityConverter" />
+            <converter:HtmlColorConverter x:Key="HtmlColorConverter" />
+            <converter:ConversationTitleConverter x:Key="ConversationTitleConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Search"
+                     Icon="Resources/ic_search_white_24dp.png"
+                     Clicked="ToolbarItem_Clicked"
+                     Order="Primary" />
+        <ToolbarItem Text="All"
+                     CommandParameter="0"
+                     Clicked="Filter_Clicked"
+                     Order="Secondary" />
+        <ToolbarItem Text="Assigned to me"
+                     CommandParameter="1"
+                     Clicked="Filter_Clicked"
+                     Order="Secondary" />
+        <ToolbarItem Text="Flagged"
+                     CommandParameter="2"
+                     Clicked="Filter_Clicked"
+                     Order="Secondary" />
+        <ToolbarItem Text="Followed by me"
+                     CommandParameter="3"
+                     Clicked="Filter_Clicked"
+                     Order="Secondary" />
+        <ToolbarItem Text="Saved contact"
+                     CommandParameter="4"
+                     Clicked="Filter_Clicked"
+                     Order="Secondary" />
+        <ToolbarItem Text="Unassigned"
+                     CommandParameter="5"
+                     Clicked="Filter_Clicked"
+                     Order="Secondary" />
+        <ToolbarItem Text="Unsaved contact"
+                     CommandParameter="6"
+                     Clicked="Filter_Clicked"
+                     Order="Secondary" />
+        <ToolbarItem Text="Archived"
+                     CommandParameter="7"
+                     Clicked="Filter_Clicked"
+                     Order="Secondary" />
+        <ToolbarItem Text="Logout"
+                     Clicked="Logout_Clicked"
+                     Order="Secondary" />
+    </ContentPage.ToolbarItems>
+    <ContentPage.Content>
+        <StackLayout>
+            <SearchBar x:Name="SearchEntry"
+                       Margin="0,5,20,0"
+                       Placeholder="{i18n:Translate SearchPlaceholder}"
+                       Text="{Binding Search}"
+                       IsVisible="{Binding IsSearchEnabled, Mode=TwoWay}"
+                       SearchCommand="{Binding LoadItemsCommand}" />            
+
+            <ListView x:Name="ItemsListView"
+                      ItemsSource="{Binding Items}"
+                      VerticalOptions="FillAndExpand"
+                      HasUnevenRows="true"
+                      RefreshCommand="{Binding LoadItemsCommand}"
+                      IsPullToRefreshEnabled="true"
+                      IsRefreshing="{Binding IsBusy, Mode=OneWay}"
+                      CachingStrategy="RecycleElement"
+                      ItemSelected="OnItemSelected">
+                <ListView.Behaviors>
+                    <behavior:ListViewPagningBehavior Command="{Binding LoadMoreCommand}"
+                                                      Converter="{StaticResource ItemVisibilityConverter}">
+                    </behavior:ListViewPagningBehavior>
+                </ListView.Behaviors>
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <Grid Margin="10, -10, 0,5"
+                                  Padding="0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="auto" />
+                                    <ColumnDefinition Width="auto" />
+                                    <ColumnDefinition Width="2*" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="1*" />
+                                    <RowDefinition Height="1*" />
+                                </Grid.RowDefinitions>
+
+                                <Grid Grid.Column="1"
+                                      Grid.Row="1"
+                                      Grid.RowSpan="2">
+                                    <local:ShapeView ShapeType="Circle"
+                                                     StrokeColor="{Binding AvatarColor, Converter={StaticResource HtmlColorConverter}}"
+                                                     Color="{Binding AvatarColor, Converter={StaticResource HtmlColorConverter}}"
+                                                     Padding="0" />
+                                    <Label Text="{Binding Name, Converter={StaticResource InitialsConverter}}"
+                                           TextColor="White"
+                                           Margin="10,15"
+                                           LineBreakMode="NoWrap"
+                                           VerticalOptions="StartAndExpand"
+                                           Style="{DynamicResource ListItemTextStyle}"
+                                           FontSize="16" />
+                                </Grid>
+                                <Label Text="{Binding LastMessage.Date, Converter={StaticResource DateTimeAgoConverter}}"
+                                       LineBreakMode="NoWrap"
+                                       Style="{DynamicResource ListItemTextStyle}"
+                                       FontSize="10"
+                                       Grid.Row="1"
+                                       Grid.Column="3" />
+                                <Label Text="{Binding ., Converter={StaticResource ConversationTitleConverter}}"
+                                       LineBreakMode="NoWrap"
+                                       Style="{DynamicResource ListItemTextStyle}"
+                                       FontSize="16"
+                                       Grid.Row="1"
+                                       Grid.Column="2" />
+                                <Label Text="{Binding LastMessage.Text}"
+                                       LineBreakMode="NoWrap"
+                                       Style="{DynamicResource ListItemDetailTextStyle}"
+                                       FontSize="13"
+                                       Grid.Row="2"
+                                       Grid.Column="2"
+                                       Grid.ColumnSpan="2" />
+                            </Grid>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="AskPam.Views.LoginPage"
+             xmlns:i18n="clr-namespace:AskPam.Helpers;assembly=AskPam"
+             Title="LoginPage">
+  <ScrollView>
+    <StackLayout Padding="10">
+        <Image Source="app_logo.png" Margin="10,40" />
+        <Entry Text="{Binding Username}" Placeholder="{i18n:Translate UsernameLabel}"  />
+        <Entry Text="{Binding Password}" IsPassword="True" Placeholder="{i18n:Translate PasswordLabel}" />
+        <Button Text="{i18n:Translate LoginLabel}" Command="{Binding LoginCommand}"/>
+        <Label Text="{Binding StatusMessage}" TextColor="Red" />
+        <ActivityIndicator Color="{StaticResource Primary}" IsRunning="{Binding IsBusy}}" />
+    </StackLayout>
+  </ScrollView>
+</ContentPage>
