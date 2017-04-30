@@ -1,0 +1,20 @@
+{
+    "name": "gustav",
+    "version": "0.1.0",
+    "description": "",
+    "main": "server.js",
+    "scripts": {
+        "start": "node server.js"
+    },
+    "repository": {
+        "type": "git",
+        "url": "ssh://ask-pam@ask-pam.visualstudio.com:22/DefaultCollection/_git/Gustav"
+    },
+    "dependencies": {
+        "botbuilder": "^3.7.0",
+        "dotenv": "^4.0.0",
+        "mongodb": "^2.2.25",
+        "request": "^2.81.0",
+        "restify": "^4.3.0"
+    }
+}
